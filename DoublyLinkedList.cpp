@@ -1,7 +1,8 @@
 ﻿#include <iostream>
 #include <string>
 #include <fstream>
-#include <map>
+//#include <map>
+#include <vector>
 
 using namespace std;
 
@@ -14,9 +15,50 @@ struct ListNode {
 
 class ListWork
 {
-	void FillList(ListNode& list)
+	public:
+	std::vector <std::string> file_data;
+	
+	
+
+	void MakeAndFillList()
 	{
-		std::map <std::string, std::string> file_data;
+		ListNode node;
+		ListNode* head;
+		head = &node;
+		ListNode* current_node = head;
+		for (int i = 0; i < file_data.size() / 2; i++)
+		{
+			ListNode node;
+			ListNode* new_node;
+			new_node = &node;
+			current_node->next = new_node;
+			new_node->prev = current_node;
+			current_node = new_node;
+		}
+
+		
+		/*node.data = ListWork::file_data[0];
+		
+		if (std::stoi(file_data[1]) == -1)
+		{
+			node.rand = nullptr;
+		}
+		else
+		{
+			int rand_node_number = std::stoi(ListWork::file_data[1]);
+			for (int i = 0; i < file_data.size() / 2; i++)
+			{
+				
+			}
+			//node.rand = ;
+		}*/
+
+
+	}
+
+	void ExtractFileData()
+	{
+
 		std::string line_data;
 		std::string first_value_of_the_line;
 		std::string second_value_of_the_line;
@@ -30,8 +72,8 @@ class ListWork
 				{
 					if (symbol_mark == true)
 					{
-						//std::cout << "first: " << first_value_of_the_line << std::endl;
-						file_data[second_value_of_the_line] = first_value_of_the_line;
+						file_data.push_back(first_value_of_the_line);
+						file_data.push_back(second_value_of_the_line);
 						first_value_of_the_line = "";
 						second_value_of_the_line = "";
 						symbol_mark = false;
@@ -44,8 +86,6 @@ class ListWork
 							second_value_of_the_line += line_data[j];
 
 						}
-						//std::cout << "second: " << second_value_of_the_line << std::endl;
-						//second_value_of_the_line = "";
 						symbol_mark = true;
 					}
 					else
@@ -55,13 +95,14 @@ class ListWork
 				}
 			}
 		}
-		std::cout << "NNN: " << file_data["-1"] << std::endl;
 	}
 };
 
 int main()
 {
-	ListNode* HEAD;
-	ListWork lll;
+	ListWork* list_work = new ListWork();
+	//list_work->ExtractFileData();
+	list_work->MakeAndFillList();
+
 	return 0;
 }
