@@ -1,9 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <fstream>
-//#include <map>
 #include <vector>
-
 using namespace std;
 
 struct ListNode {
@@ -15,10 +13,9 @@ struct ListNode {
 
 class ListWork
 {
-	public:
+public:
 	std::vector <std::string> file_data;
-	
-
+	ListNode* head;
 	ListNode* SearchNode(ListNode* head, int node_index)
 	{
 		ListNode* current_node = head;
@@ -26,7 +23,6 @@ class ListWork
 		for (int i = 0; i < file_data.size() / 2; i++)
 		{
 			current_node = current_node->next;
-			//std::cout << "mmm: " << counter << std::endl;
 			if (counter == node_index)
 			{
 				return current_node;
@@ -38,9 +34,8 @@ class ListWork
 		}
 	}
 
-	void MakeAndFillList()
+	ListNode* MakeAndFillList()
 	{
-
 		ListNode node;
 		ListNode* head;
 		head = &node;
@@ -78,13 +73,12 @@ class ListWork
 				temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
 			}
 			temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
-			temp_node->data = file_data[j-1];
-			std::cout << "mmm: " << temp_node->data << std::endl;
+
+			temp_node->data = file_data[j - 1];
 			temp_node->prev = temp_node;
 			temp_node = temp_node->next;
 		}
-		
-		
+		this->head = head;
 	}
 
 	void ExtractFileData()
@@ -127,22 +121,60 @@ class ListWork
 			}
 		}
 	}
-
-	void ShowList(ListNode* nnn)
+};
+class SerializeAndDeserializeList
+{
+	public:
+	void SerializeList(ListNode* head, std::string file_name)
 	{
-		for (int i = 0; i < file_data.size() / 2; i++)
+		ofstream file(file_name, ios::binary);
+		if (!file.is_open())
 		{
-			std::cout << "lll:   " << nnn->data << std::endl;
+			std::cout << "The file is not open." << std::endl;
+			return;
 		}
-		nnn = nnn->next;
+		file.write(reinterpret_cast<const char*>(head), sizeof(*head));
+		file.close();
+		std::cout << "The list is serialized." << std::endl;
+	}
+
+	ListNode DeserializeList(std::string file_name)
+	{
+		ListNode deserialized_list;
+		ifstream file(file_name, ios::binary);
+		if (!file.is_open())
+		{
+			std::cout << "The file is not open." << std::endl;
+			return deserialized_list;
+		}
+		file.read(reinterpret_cast<char*>(&deserialized_list), sizeof(deserialized_list));
+		file.close();
+		std::cout << "The list is deserialized." << std::endl;
+		return deserialized_list;
 	}
 };
+
+/*void ShowList(ListNode* nnn)
+{
+	for (int i = 0; i < file_data.size() / 2; i++)
+	{
+		std::cout << "lll:   " << nnn->data << std::endl;
+		nnn = nnn->next;
+	}
+
+}*/
 
 int main()
 {
 	ListWork* list_work = new ListWork();
+	
+	ListNode* head;
 	list_work->ExtractFileData();
 	list_work->MakeAndFillList();
+	head = list_work->head;
+	SerializeAndDeserializeList* serialize_and_deserialize_list = new SerializeAndDeserializeList();
+	serialize_and_deserialize_list->SerializeList(head, "outlet.out");
+	serialize_and_deserialize_list->DeserializeList("outlet.out");
 
 	return 0;
 }
