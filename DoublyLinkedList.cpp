@@ -40,6 +40,7 @@ class ListWork
 
 	void MakeAndFillList()
 	{
+
 		ListNode node;
 		ListNode* head;
 		head = &node;
@@ -65,22 +66,25 @@ class ListWork
 		}
 		ListNode* temp_node;
 		temp_node = head;
-		for (int i = 0; i < file_data.size() / 2; i++)
+		for (int i = 0, j = 1; i < file_data.size() / 2; i++, j += 2)
 		{
-			if (std::stoi(file_data[i+1]) == -1)
+			if (std::stoi(file_data[j]) == -1)
 			{
 				temp_node->rand = nullptr;
 			}
 			else
 			{
-				int rand_node_number = std::stoi(ListWork::file_data[i+1]);
-				temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[i+1]));
+				int rand_node_number = std::stoi(ListWork::file_data[j]);
+				temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
 			}
-			temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[i+1]));
-			temp_node->data = file_data[i];
+			temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
+			temp_node->data = file_data[j-1];
+			std::cout << "mmm: " << temp_node->data << std::endl;
 			temp_node->prev = temp_node;
 			temp_node = temp_node->next;
 		}
+		
+		
 	}
 
 	void ExtractFileData()
@@ -122,6 +126,15 @@ class ListWork
 				}
 			}
 		}
+	}
+
+	void ShowList(ListNode* nnn)
+	{
+		for (int i = 0; i < file_data.size() / 2; i++)
+		{
+			std::cout << "lll:   " << nnn->data << std::endl;
+		}
+		nnn = nnn->next;
 	}
 };
 
