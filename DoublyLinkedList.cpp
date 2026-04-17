@@ -18,7 +18,25 @@ class ListWork
 	public:
 	std::vector <std::string> file_data;
 	
-	
+
+	ListNode* SearchNode(ListNode* head, int node_index)
+	{
+		ListNode* current_node = head;
+		int counter = 0;
+		for (int i = 0; i < file_data.size() / 2; i++)
+		{
+			current_node = current_node->next;
+			//std::cout << "mmm: " << counter << std::endl;
+			if (counter == node_index)
+			{
+				return current_node;
+			}
+			else
+			{
+				counter++;
+			}
+		}
+	}
 
 	void MakeAndFillList()
 	{
@@ -35,10 +53,7 @@ class ListWork
 			new_node->prev = current_node;
 			current_node = new_node;
 		}
-
-		
-		/*node.data = ListWork::file_data[0];
-		
+		node.data = ListWork::file_data[0];
 		if (std::stoi(file_data[1]) == -1)
 		{
 			node.rand = nullptr;
@@ -46,14 +61,26 @@ class ListWork
 		else
 		{
 			int rand_node_number = std::stoi(ListWork::file_data[1]);
-			for (int i = 0; i < file_data.size() / 2; i++)
+			node.rand = SearchNode(head, std::stoi(ListWork::file_data[1]));
+		}
+		ListNode* temp_node;
+		temp_node = head;
+		for (int i = 0; i < file_data.size() / 2; i++)
+		{
+			if (std::stoi(file_data[i+1]) == -1)
 			{
-				
+				temp_node->rand = nullptr;
 			}
-			//node.rand = ;
-		}*/
-
-
+			else
+			{
+				int rand_node_number = std::stoi(ListWork::file_data[i+1]);
+				temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[i+1]));
+			}
+			temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[i+1]));
+			temp_node->data = file_data[i];
+			temp_node->prev = temp_node;
+			temp_node = temp_node->next;
+		}
 	}
 
 	void ExtractFileData()
@@ -101,7 +128,7 @@ class ListWork
 int main()
 {
 	ListWork* list_work = new ListWork();
-	//list_work->ExtractFileData();
+	list_work->ExtractFileData();
 	list_work->MakeAndFillList();
 
 	return 0;
