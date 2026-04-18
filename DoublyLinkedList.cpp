@@ -14,6 +14,7 @@ struct ListNode {
 class ListWork
 {
 public:
+	
 	std::vector <std::string> file_data;
 	ListNode* head;
 	ListNode* SearchNode(ListNode* head, int node_index)
@@ -36,11 +37,12 @@ public:
 
 	ListNode* MakeAndFillList()
 	{
+		using namespace std;
 		ListNode node;
 		ListNode* head;
 		head = &node;
 		ListNode* current_node = head;
-		for (int i = 0; i < file_data.size() / 2; i++)
+		for (int i = 0; i < (file_data.size() / 2); i++)
 		{
 			ListNode node;
 			ListNode* new_node;
@@ -49,36 +51,85 @@ public:
 			new_node->prev = current_node;
 			current_node = new_node;
 		}
-		node.data = ListWork::file_data[0];
+		head->data = ListWork::file_data[0];
 		if (std::stoi(file_data[1]) == -1)
 		{
-			node.rand = nullptr;
+			head->rand = nullptr;
 		}
 		else
 		{
 			int rand_node_number = std::stoi(ListWork::file_data[1]);
-			node.rand = SearchNode(head, std::stoi(ListWork::file_data[1]));
+			head->rand = SearchNode(head, std::stoi(ListWork::file_data[1]));
 		}
 		ListNode* temp_node;
-		temp_node = head;
-		for (int i = 0, j = 1; i < file_data.size() / 2; i++, j += 2)
+		temp_node = head->next;
+		
+		ListNode* temp_node2;
+		temp_node2 = head->next;
+
+		for (int i = 0, j = 3; i < (file_data.size() / 2); i++, j += 2)
+		{
+			temp_node->data = file_data[j - 1];
+			if (temp_node->next != nullptr)
+			{
+				temp_node = temp_node->next;
+				cout << temp_node->data;
+				//cout << temp_node->prev->data;
+			}
+			else
+			{
+				break;
+			}
+		}
+		/*ListNode* temp_node3;
+		temp_node3 = head;
+		while (temp_node != nullptr)
+		{
+			cout << temp_node->data;
+			temp_node3 = temp_node->next;
+		}*/
+		//cout << head->prev->data << endl;
+		/*for (int i = 0; i < (file_data.size() / 2); i++)
+		{
+			cout << "dfdf:  " << head->rand->data << endl;
+			//head = head->next;
+		}*/
+		//========================================================================================================
+		//========================================================================================================
+		//========================================================================================================
+		//========================================================================================================
+		//========================================================================================================
+		//========================================================================================================
+		/*for (int i = 2, j = 3; i < (file_data.size() / 2) + 1; i++, j += 2)
 		{
 			if (std::stoi(file_data[j]) == -1)
 			{
-				temp_node->rand = nullptr;
+				temp_node2->rand = nullptr;
 			}
 			else
 			{
 				int rand_node_number = std::stoi(ListWork::file_data[j]);
-				temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
+				temp_node2->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
+				std::cout << "qqqqqqqqq: " << temp_node2->data << std::endl;
 			}
-			temp_node->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
+		}*/
+		/*
+		for (int i = 0; i < file_data.size() / 2; i++)
+		{
+			if (temp_node3->rand != nullptr)
+			{
+				std::cout << "dddnnn: " << head->rand->data << std::endl;
+				temp_node3 = temp_node3->next;
+			}
+			else
+			{
+				temp_node3 = temp_node3->next;
+				continue;
+			}
 
-			temp_node->data = file_data[j - 1];
-			temp_node->prev = temp_node;
-			temp_node = temp_node->next;
-		}
+		}*/
 		this->head = head;
+		//std::cout << "dddrrr: " << this->head->rand->data << std::endl;
 	}
 
 	void ExtractFileData()
@@ -121,6 +172,15 @@ public:
 			}
 		}
 	}
+	/*void ShowList(ListNode* nnn)
+	{
+		for (int i = 0; i < file_data.size() / 2; i++)
+		{
+			std::cout << "lll:   " << nnn->data << std::endl;
+			//nnn = nnn.next;
+		}
+
+	}*/
 };
 class SerializeAndDeserializeList
 {
@@ -141,6 +201,7 @@ class SerializeAndDeserializeList
 	ListNode DeserializeList(std::string file_name)
 	{
 		ListNode deserialized_list;
+		deserialized_list.data = "";
 		ifstream file(file_name, ios::binary);
 		if (!file.is_open())
 		{
@@ -154,15 +215,7 @@ class SerializeAndDeserializeList
 	}
 };
 
-/*void ShowList(ListNode* nnn)
-{
-	for (int i = 0; i < file_data.size() / 2; i++)
-	{
-		std::cout << "lll:   " << nnn->data << std::endl;
-		nnn = nnn->next;
-	}
 
-}*/
 
 int main()
 {
@@ -172,9 +225,23 @@ int main()
 	list_work->ExtractFileData();
 	list_work->MakeAndFillList();
 	head = list_work->head;
+	//std::cout << "dddfff: " << head->data << std::endl;
 	SerializeAndDeserializeList* serialize_and_deserialize_list = new SerializeAndDeserializeList();
-	serialize_and_deserialize_list->SerializeList(head, "outlet.out");
-	serialize_and_deserialize_list->DeserializeList("outlet.out");
+	serialize_and_deserialize_list->SerializeList(head, "data.bin");
+	ListNode deserialized_list = serialize_and_deserialize_list->DeserializeList("data.bin");
+	//std::cout << "ddd: " << deserialized_list.data.size() << std::endl;
+	ListNode* deserialized_list1;
+	deserialized_list1 = &deserialized_list;
+	//list_work->ShowList(deserialized_list1);
+	/*if (deserialized_list1 != nullptr)
+	{
+		std::cout <<  << std::endl;
+	}
+	else
+	{
+		std::cout << deserialized_list1->data << std::endl;
+	}*/
+
 
 	return 0;
 }
