@@ -15,7 +15,8 @@ class ListWork
 {
 	public:
 	std::vector <std::string> file_data;
-	ListNode* SearchNode(ListNode* head, int node_index) //+++++
+
+	ListNode* SearchNode(ListNode* head, int node_index) // searching a random node
 	{
 		ListNode* last_node = nullptr;
 		while (head != nullptr)
@@ -43,7 +44,7 @@ class ListWork
 		}
 	}
 
-	void FillList(ListNode** head) //+++++
+	void FillList(ListNode** head) // filling the list with data
 	{
 		for (int i = 0, j = 0; i < file_data.size() / 2; i++, j += 2)
 		{
@@ -51,19 +52,19 @@ class ListWork
 		}
 	}
 
-	void AddRandNode(ListNode* head) //+++++
+	void AddRandNode(ListNode* head)
 	{
-		int counter = 1;
+		int counter = (file_data.size() - 1);
 		while (head != nullptr)
 		{
 			int index = std::stoi(file_data[counter]);
 			head->rand = SearchNode(head, index);
 			head = head->next;
-			counter += 2;
+			counter -= 2;
 		}
 	}
 
-	void AppendData(ListNode** head, std::string data) //+++++
+	void AppendData(ListNode** head, std::string data) // appending the data to the list
 	{
 		ListNode* Node = new ListNode;
 		Node->data = data;
@@ -76,7 +77,7 @@ class ListWork
 		(*head) = Node;
 	}
 
-	void ShowList(ListNode* head) //+++++
+	void ShowList(ListNode* head)
 	{
 		ListNode* last_node = nullptr;
 		while (head != nullptr)
@@ -88,24 +89,43 @@ class ListWork
 		{
 			if (last_node->prev == nullptr)
 			{
-				std::cout << last_node->data << endl;
-				cout << endl;
-				break;
+				if (last_node->rand == nullptr)
+				{
+					std::cout << last_node->data << "(rand node data: nullptr)";
+					cout << endl;
+					cout << endl;
+					break;
+				}
+				else
+				{
+					std::cout << last_node->data << "(rand node data: " << last_node->rand->data << ")";
+					cout << endl;
+					cout << endl;
+					break;
+				}
 			}
 			else
 			{
-				std::cout << last_node->data;
-				cout << "<->";
+				if (last_node->rand == nullptr)
+				{
+					std::cout << last_node->data << "(rand node data: nullptr)";
+					cout << "<->";
+				}
+				else
+				{
+					std::cout << last_node->data << "(rand node data: " << last_node->rand->data << ")";
+					cout << "<->";
+				}
 				last_node = last_node->prev;
 			}
 		}
 	}
 
-	void ExtractFileData() //+++++
+	void ExtractFileData()
 	{
 		std::string line_data;
-		std::string first_value_of_the_line;
-		std::string second_value_of_the_line;
+		std::string first_value_of_the_line; // data for the list
+		std::string second_value_of_the_line; // index of a random node
 		bool symbol_mark = false;
 		std::ifstream in("inlet.in");
 		if (in.is_open())
@@ -142,10 +162,10 @@ class ListWork
 	}
 };
 
-class SerializeAndDeserializeList  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class SerializeAndDeserializeList
 {
 	public:
-	void SerializeList(ListNode* head, std::string file_name) //+++++
+	void SerializeList(ListNode* head, std::string file_name)
 	{
 		ofstream file(file_name, ios::binary);
 		if (!file.is_open())
@@ -158,7 +178,7 @@ class SerializeAndDeserializeList  //+++++++++++++++++++++++++++++++++++++++++++
 		std::cout << "The list is serialized." << std::endl;
 	}
 
-	ListNode DeserializeList(std::string file_name) //+++++
+	ListNode DeserializeList(std::string file_name)
 	{
 		ListNode deserialized_list;
 		deserialized_list.data = "";
@@ -179,9 +199,10 @@ int main()
 {
 	ListWork* list_work = new ListWork();
 	ListNode* head = nullptr;
-	list_work->ExtractFileData();
-	list_work->FillList(&head);
-	list_work->AddRandNode(head);
+
+	list_work->ExtractFileData(); // extracting data from the file
+	list_work->FillList(&head); // filling the list with the data
+	list_work->AddRandNode(head); // adding random nodes
 	cout << "The doubly linked list" << endl;
 	list_work->ShowList(head);
 	SerializeAndDeserializeList* serialize_and_deserialize_list = new SerializeAndDeserializeList();
