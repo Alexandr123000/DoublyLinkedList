@@ -86,8 +86,18 @@ class ListWork
 		}
 		while (last_node != nullptr)
 		{
-			std::cout << last_node->data << std::endl;
-			last_node = last_node->prev;
+			if (last_node->prev == nullptr)
+			{
+				std::cout << last_node->data << endl;
+				cout << endl;
+				break;
+			}
+			else
+			{
+				std::cout << last_node->data;
+				cout << "<->";
+				last_node = last_node->prev;
+			}
 		}
 	}
 
