@@ -13,17 +13,24 @@ struct ListNode {
 
 class ListWork
 {
-public:
-	
+	public:
 	std::vector <std::string> file_data;
-	ListNode* head;
-	ListNode* SearchNode(ListNode* head, int node_index)
+	ListNode* SearchNode(ListNode* head, int node_index) //+++++
 	{
-		ListNode* current_node = head;
-		int counter = 0;
-		for (int i = 0; i < file_data.size() / 2; i++)
+		ListNode* last_node = nullptr;
+		while (head != nullptr)
 		{
-			current_node = current_node->next;
+			last_node = head;
+			head = head->next;
+		}
+		ListNode* current_node = last_node;
+		int counter = 0;
+		if (node_index == -1)
+		{
+			return nullptr;
+		}
+		for (int i = 0; i < (file_data.size() / 2); i++)
+		{
 			if (counter == node_index)
 			{
 				return current_node;
@@ -32,109 +39,60 @@ public:
 			{
 				counter++;
 			}
+			current_node = current_node->prev;
 		}
 	}
 
-	ListNode* MakeAndFillList()
+	void FillList(ListNode** head) //+++++
 	{
-		using namespace std;
-		ListNode node;
-		ListNode* head;
-		head = &node;
-		ListNode* current_node = head;
-		for (int i = 0; i < (file_data.size() / 2); i++)
+		for (int i = 0, j = 0; i < file_data.size() / 2; i++, j += 2)
 		{
-			ListNode node;
-			ListNode* new_node;
-			new_node = &node;
-			current_node->next = new_node;
-			new_node->prev = current_node;
-			current_node = new_node;
+			AppendData(head, file_data[j]);
 		}
-		head->data = ListWork::file_data[0];
-		if (std::stoi(file_data[1]) == -1)
-		{
-			head->rand = nullptr;
-		}
-		else
-		{
-			int rand_node_number = std::stoi(ListWork::file_data[1]);
-			head->rand = SearchNode(head, std::stoi(ListWork::file_data[1]));
-		}
-		ListNode* temp_node;
-		temp_node = head->next;
-		
-		ListNode* temp_node2;
-		temp_node2 = head->next;
-
-		for (int i = 0, j = 3; i < (file_data.size() / 2); i++, j += 2)
-		{
-			temp_node->data = file_data[j - 1];
-			if (temp_node->next != nullptr)
-			{
-				temp_node = temp_node->next;
-				cout << temp_node->data;
-				//cout << temp_node->prev->data;
-			}
-			else
-			{
-				break;
-			}
-		}
-		/*ListNode* temp_node3;
-		temp_node3 = head;
-		while (temp_node != nullptr)
-		{
-			cout << temp_node->data;
-			temp_node3 = temp_node->next;
-		}*/
-		//cout << head->prev->data << endl;
-		/*for (int i = 0; i < (file_data.size() / 2); i++)
-		{
-			cout << "dfdf:  " << head->rand->data << endl;
-			//head = head->next;
-		}*/
-		//========================================================================================================
-		//========================================================================================================
-		//========================================================================================================
-		//========================================================================================================
-		//========================================================================================================
-		//========================================================================================================
-		/*for (int i = 2, j = 3; i < (file_data.size() / 2) + 1; i++, j += 2)
-		{
-			if (std::stoi(file_data[j]) == -1)
-			{
-				temp_node2->rand = nullptr;
-			}
-			else
-			{
-				int rand_node_number = std::stoi(ListWork::file_data[j]);
-				temp_node2->rand = SearchNode(head, std::stoi(ListWork::file_data[j]));
-				std::cout << "qqqqqqqqq: " << temp_node2->data << std::endl;
-			}
-		}*/
-		/*
-		for (int i = 0; i < file_data.size() / 2; i++)
-		{
-			if (temp_node3->rand != nullptr)
-			{
-				std::cout << "dddnnn: " << head->rand->data << std::endl;
-				temp_node3 = temp_node3->next;
-			}
-			else
-			{
-				temp_node3 = temp_node3->next;
-				continue;
-			}
-
-		}*/
-		this->head = head;
-		//std::cout << "dddrrr: " << this->head->rand->data << std::endl;
 	}
 
-	void ExtractFileData()
+	void AddRandNode(ListNode* head) //+++++
 	{
+		int counter = 1;
+		while (head != nullptr)
+		{
+			int index = std::stoi(file_data[counter]);
+			head->rand = SearchNode(head, index);
+			head = head->next;
+			counter += 2;
+		}
+	}
 
+	void AppendData(ListNode** head, std::string data) //+++++
+	{
+		ListNode* Node = new ListNode;
+		Node->data = data;
+		Node->next = (*head);
+		Node->prev = nullptr;
+		if ((*head) != nullptr)
+		{
+			(*head)->prev = Node;
+		}
+		(*head) = Node;
+	}
+
+	void ShowList(ListNode* head) //+++++
+	{
+		ListNode* last_node = nullptr;
+		while (head != nullptr)
+		{
+			last_node = head;
+			head = head->next;
+		}
+		while (last_node != nullptr)
+		{
+			std::cout << last_node->data << std::endl;
+			last_node = last_node->prev;
+		}
+	}
+
+	void ExtractFileData() //+++++
+	{
 		std::string line_data;
 		std::string first_value_of_the_line;
 		std::string second_value_of_the_line;
@@ -172,20 +130,12 @@ public:
 			}
 		}
 	}
-	/*void ShowList(ListNode* nnn)
-	{
-		for (int i = 0; i < file_data.size() / 2; i++)
-		{
-			std::cout << "lll:   " << nnn->data << std::endl;
-			//nnn = nnn.next;
-		}
-
-	}*/
 };
-class SerializeAndDeserializeList
+
+class SerializeAndDeserializeList  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 {
 	public:
-	void SerializeList(ListNode* head, std::string file_name)
+	void SerializeList(ListNode* head, std::string file_name) //+++++
 	{
 		ofstream file(file_name, ios::binary);
 		if (!file.is_open())
@@ -198,7 +148,7 @@ class SerializeAndDeserializeList
 		std::cout << "The list is serialized." << std::endl;
 	}
 
-	ListNode DeserializeList(std::string file_name)
+	ListNode DeserializeList(std::string file_name) //+++++
 	{
 		ListNode deserialized_list;
 		deserialized_list.data = "";
@@ -215,33 +165,22 @@ class SerializeAndDeserializeList
 	}
 };
 
-
-
 int main()
 {
 	ListWork* list_work = new ListWork();
-	
-	ListNode* head;
+	ListNode* head = nullptr;
 	list_work->ExtractFileData();
-	list_work->MakeAndFillList();
-	head = list_work->head;
-	//std::cout << "dddfff: " << head->data << std::endl;
+	list_work->FillList(&head);
+	list_work->AddRandNode(head);
+	cout << "The doubly linked list" << endl;
+	list_work->ShowList(head);
 	SerializeAndDeserializeList* serialize_and_deserialize_list = new SerializeAndDeserializeList();
-	serialize_and_deserialize_list->SerializeList(head, "data.bin");
-	ListNode deserialized_list = serialize_and_deserialize_list->DeserializeList("data.bin");
-	//std::cout << "ddd: " << deserialized_list.data.size() << std::endl;
-	ListNode* deserialized_list1;
-	deserialized_list1 = &deserialized_list;
-	//list_work->ShowList(deserialized_list1);
-	/*if (deserialized_list1 != nullptr)
-	{
-		std::cout <<  << std::endl;
-	}
-	else
-	{
-		std::cout << deserialized_list1->data << std::endl;
-	}*/
-
-
+	serialize_and_deserialize_list->SerializeList(head, "outlet.out");
+	ListNode deserialized_list = serialize_and_deserialize_list->DeserializeList("outlet.out");
+	ListNode* pdeserialized_list;
+	pdeserialized_list = &deserialized_list;
+	cout << endl;
+	cout << "The doubly linked list (deserialized)" << endl;
+	list_work->ShowList(pdeserialized_list);
 	return 0;
 }
